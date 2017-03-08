@@ -8,6 +8,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import dao.Usuario;
+import database.DatabaseManager;
+
 @Path("/excursiones")
 public class ExcursionesResource {
 	
@@ -20,8 +23,16 @@ public class ExcursionesResource {
 	@GET
 	@Path("/{param}")
 	public Response getMsg(@PathParam("param") String msg) {
-
-		String output = "Jersey say : " + msg;
+		Usuario u = new Usuario();
+		try {
+			DatabaseManager.getInstance().establecerConexion();
+			u = DatabaseManager.getInstance().obtenerUsuarioPorId(msg);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String output = "Id usuario " + u.getIdUsuario();
 
 		return Response.status(200).entity(output).build();
 
