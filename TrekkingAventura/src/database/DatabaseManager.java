@@ -37,12 +37,12 @@ public class DatabaseManager {
 				// Load the class that provides the "jdbc:google:mysql://"
 				// prefix.
 				Class.forName("com.mysql.jdbc.GoogleDriver");
-				url = "jdbc:google:mysql://trekkingaventura-160709:db-trekkingaventura/db_trekkingaventura?user=root&password=toor";
+				url = System.getProperty("ae-cloudsql.cloudsql-database-url");
 			} else {
 				// Connecting from an external network.
 				DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 				Class.forName("com.mysql.jdbc.Driver");
-				url = "jdbc:mysql://104.198.26.115:3306/db_trekkingaventura?user=root&password=toor";
+				url = System.getProperty("ae-cloudsql.local-database-url");
 			}
 
 			con = DriverManager.getConnection(url);

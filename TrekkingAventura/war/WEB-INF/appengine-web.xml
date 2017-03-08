@@ -12,8 +12,9 @@
   <!-- Configure java.util.logging -->
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+    <property name="ae-cloudsql.cloudsql-database-url" value="jdbc:google:mysql://trekkingaventura-160709:us-central1:db-trekkingaventura/db_trekkingaventura?user=root&amp;password=toor" />
+    <property name="ae-cloudsql.local-database-url" value="jdbc:mysql://google/db_trekkingaventura?cloudSqlInstance=trekkingaventura-160709:us-central1:db-trekkingaventura&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=root&amp;password=toor&amp;useSSL=false" />
   </system-properties>
-  <sessions-enabled>true</sessions-enabled>
   <!--
     HTTP Sessions are disabled by default. To enable HTTP sessions specify:
 
