@@ -1,12 +1,5 @@
 package resources;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Logger;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,15 +8,11 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.google.appengine.api.utils.SystemProperty;
-
 import dao.Usuario;
 import database.DatabaseManager;
 
 @Path("/excursiones")
 public class ExcursionesResource {
-	
-	private static final Logger log = Logger.getLogger(ExcursionesResource.class.getName());
 	
 	@Context
 	UriInfo	uriInfo;
