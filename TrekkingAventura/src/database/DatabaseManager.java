@@ -6,9 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
-
-import org.datanucleus.query.evaluator.memory.SubstringFunctionEvaluator;
 
 import com.google.appengine.api.utils.SystemProperty;
 
@@ -143,16 +142,22 @@ public class DatabaseManager {
 		}
 	}
 	
-	public ArrayList<Excursion> obtenerExcursionesPorCriterio(String nombre, String lugar, double distancia, String nivel) {
-		ArrayList<Excursion> ale = new ArrayList<Excursion>();
+	public List<Excursion> obtenerExcursionesPorCriterio(String criterio) {
+		final String[] criterios = criterio.split("|");
+		final String critNombre = criterios[0];
+		final String critLugar = criterios[1];
+		final double critDistancia = Double.parseDouble(criterios[2]);
+		final String critNivel = criterios[3];
 		
-		final String condNombre = nombre == null ? "" : "nombre = '" + nombre + "'";
+		List<Excursion> ale = new ArrayList<Excursion>();
+		
+		final String condNombre = critNombre.equals("nulo") ? "" : "nombre = '" + critNombre + "'";
 		final String condNombreComa = condNombre.isEmpty() ? "" : ",";
-		final String condLugar = lugar == null ? "" : "lugar = '" + lugar + "'";
+		final String condLugar = critLugar.equals("nulo") ? "" : "lugar = '" + critLugar + "'";
 		final String condLugarComa = condLugar.isEmpty() ? "" : ",";
-		final String condDistancia = distancia == 0 ? "" : "distancia = " + distancia;
+		final String condDistancia = critDistancia == 0 ? "" : "distancia = " + critDistancia;
 		final String condDistanciaComa = condDistancia.isEmpty() ? "" : ",";
-		final String condNivel = nivel == null ? "" : "nivel = '" + nivel + "'";
+		final String condNivel = critNivel.equals("nulo") ? "" : "nivel = '" + critNivel + "'";
 		final String condNivelComa = condNivel.isEmpty() ? "" : ",";
 		
 		try {
@@ -188,7 +193,6 @@ public class DatabaseManager {
 		}
 	}
 	
-	
 	public void insertarExcursion(Excursion e) {
 		try {
 			Statement stmt = con.createStatement();
@@ -205,8 +209,6 @@ public class DatabaseManager {
 		}
 	}
 	
-
-	
 	public void eliminarExcursion(int id) {
 		try {
 			Statement stmt = con.createStatement();
@@ -219,8 +221,31 @@ public class DatabaseManager {
 	}
 	
 	// OPINIONES
-	public ArrayList<Opinion> obtenerOpinionesUsuario(String idusuario) {
-		ArrayList<Opinion> alo = new ArrayList<Opinion>();
+	public Opinion obtenerOpinionPorId(int id) {
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM opinion WHERE idopinion = " + id);
+			if (rs.next()) {
+				Opinion o = new Opinion();
+				o.setIdOpinion(rs.getInt("idopinion"));
+				o.setIdUsuario(rs.getString("idusuario"));
+				o.setIdExcursion(rs.getInt("idexcursion"));
+				o.setOpinion(rs.getString("opinion"));
+				o.setFoto(rs.getString("imgpath"));
+				log.info("Opinion: " + o.getIdOpinion());
+				return o;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			log.warning("ERROR obtenerOpinionPorId: " + e.getMessage());
+			return null;
+		}
+	}
+	
+	public List<Opinion> obtenerOpinionesUsuario(String idusuario) {
+		List<Opinion> alo = new ArrayList<Opinion>();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM opinion WHERE idusuario = '" + idusuario + "'");
@@ -242,8 +267,8 @@ public class DatabaseManager {
 		}
 	}
 	
-	public ArrayList<Opinion> obtenerOpinionesExcursion(int idexcursion) {
-		ArrayList<Opinion> alo = new ArrayList<Opinion>();
+	public List<Opinion> obtenerOpinionesExcursion(int idexcursion) {
+		List<Opinion> alo = new ArrayList<Opinion>();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM opinion WHERE idexcursion = " + idexcursion);
