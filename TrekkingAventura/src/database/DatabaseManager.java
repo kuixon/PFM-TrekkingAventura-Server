@@ -143,33 +143,33 @@ public class DatabaseManager {
 	}
 	
 	public List<Excursion> obtenerExcursionesPorCriterio(String criterio) {
-		final String[] criterios = criterio.split("|");
+		final String[] criterios = criterio.split("-");
 		final String critNombre = criterios[0];
 		final String critLugar = criterios[1];
-		final double critDistancia = Double.parseDouble(criterios[2]);
+		final String critDistancia = criterios[2];
 		final String critNivel = criterios[3];
 		
 		List<Excursion> ale = new ArrayList<Excursion>();
 		
-		final String condNombre = critNombre.equals("nulo") ? "" : "nombre = '" + critNombre + "'";
-		final String condNombreComa = condNombre.isEmpty() ? "" : ",";
-		final String condLugar = critLugar.equals("nulo") ? "" : "lugar = '" + critLugar + "'";
-		final String condLugarComa = condLugar.isEmpty() ? "" : ",";
-		final String condDistancia = critDistancia == 0 ? "" : "distancia = " + critDistancia;
-		final String condDistanciaComa = condDistancia.isEmpty() ? "" : ",";
-		final String condNivel = critNivel.equals("nulo") ? "" : "nivel = '" + critNivel + "'";
-		final String condNivelComa = condNivel.isEmpty() ? "" : ",";
+		final String condNombre = critNombre.equals("nulo") ? "" : " nombre = '" + critNombre + "'";
+		final String condNombreComa = condNombre.isEmpty() ? "" : " AND";
+		final String condLugar = critLugar.equals("nulo") ? "" : " lugar = '" + critLugar + "'";
+		final String condLugarComa = condLugar.isEmpty() ? "" : " AND";
+		final String condDistancia = critDistancia.equals("nulo") ? "" : " distancia = " + critDistancia;
+		final String condDistanciaComa = condDistancia.isEmpty() ? "" : " AND";
+		final String condNivel = critNivel.equals("nulo") ? "" : " nivel = '" + critNivel + "'";
+		final String condNivelComa = condNivel.isEmpty() ? "" : " AND";
 		
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs;
 			if (condNombre.isEmpty() && condLugar.isEmpty() && condDistancia.isEmpty() && condNivel.isEmpty()) {
-				rs = stmt.executeQuery("SELECT * FROM opinion");
+				rs = stmt.executeQuery("SELECT * FROM excursion");
 			} else {
-				final String query = "SELECT * FROM opinion "
-						+ "WHERE " + condNombre + condNombreComa + condLugar + condLugarComa + 
+				final String query = "SELECT * FROM excursion "
+						+ "WHERE" + condNombre + condNombreComa + condLugar + condLugarComa + 
 						condDistancia + condDistanciaComa + condNivel + condNivelComa;
-				rs = stmt.executeQuery(query.substring(0, query.length() - 1));
+				rs = stmt.executeQuery(query.substring(0, query.length() - 3));
 			}
 			
 			while (rs.next()) {

@@ -62,7 +62,7 @@ public class ClientManager {
 		return service.path("rest").path("excursiones").path("nombre").path(nombre).get(Excursion.class);
 	}
 	
-	public ArrayList<Excursion> getExcursionesPorCriterio(String criterio) {
+	public ArrayList<Excursion> obtenerExcursionesPorCriterio(String criterio) {
 		Excursion[] array = service.path("rest").path("excursiones").path("criterio").path(criterio).get(Excursion[].class);
 		return new ArrayList<Excursion>(Arrays.asList(array));
 	}

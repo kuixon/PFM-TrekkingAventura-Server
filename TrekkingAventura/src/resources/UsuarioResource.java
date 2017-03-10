@@ -27,13 +27,12 @@ public class UsuarioResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Usuario getUsuario() {
-		Usuario u = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			u = DatabaseManager.getInstance().obtenerUsuarioPorId(idusuario);
+			return DatabaseManager.getInstance().obtenerUsuarioPorId(idusuario);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return u;
 	}
 }
