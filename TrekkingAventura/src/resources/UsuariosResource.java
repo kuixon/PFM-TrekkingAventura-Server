@@ -25,17 +25,18 @@ public class UsuariosResource {
 	Request	request;
 	
 	@POST
+	@Path("/insertar/{idUsuario}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response newUsuario(Usuario usuario) {
+	public Response newUsuario(@PathParam("idUsuario") String idUsuario) {
 		Response res = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			if (DatabaseManager.getInstance().obtenerUsuarioPorId(usuario.getIdUsuario()) != null) {
-				res = Response.status(409).entity("Post: Usuario '" + usuario.getIdUsuario() + "' already exists").build();
+			if (DatabaseManager.getInstance().obtenerUsuarioPorId(idUsuario) != null) {
+				res = Response.status(409).entity("Post: Usuario '" + idUsuario + "' already exists").build();
 			} else {
-				URI uri = uriInfo.getAbsolutePathBuilder().path(usuario.getIdUsuario()).build();
-				res = Response.created(uri).entity(usuario).build();
-				DatabaseManager.getInstance().insertarUsuario(usuario);
+				URI uri = uriInfo.getAbsolutePathBuilder().path("usuario").path(idUsuario).build();
+				res = Response.created(uri).entity(new Usuario(idUsuario)).build();
+				DatabaseManager.getInstance().insertarUsuario(idUsuario);
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -43,7 +44,7 @@ public class UsuariosResource {
 		return res;
 	}
 	
-	@Path("{idusuario}")
+	@Path("/usuario/{idusuario}")
 	public UsuarioResource getUsuario(@PathParam("idusuario") String idusuario) {
 		return new UsuarioResource(idusuario);
 	}

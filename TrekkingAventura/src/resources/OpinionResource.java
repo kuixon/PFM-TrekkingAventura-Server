@@ -4,11 +4,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import com.sun.jersey.api.NotFoundException;
 
@@ -17,10 +17,10 @@ import database.DatabaseManager;
 
 public class OpinionResource {
 
-	private int idopinion;
+	private int idOpinion;
 	
 	public OpinionResource(int idopinion) {
-		this.idopinion = idopinion;
+		this.idOpinion = idopinion;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
 			if (DatabaseManager.getInstance().obtenerOpinionPorId(idopinion) == null)
@@ -36,7 +36,7 @@ public class OpinionResource {
 		Opinion o = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			o = DatabaseManager.getInstance().obtenerOpinionPorId(idopinion);
+			o = DatabaseManager.getInstance().obtenerOpinionPorId(idOpinion);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -45,15 +45,18 @@ public class OpinionResource {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateOpinion(@Context UriInfo uriInfo, Opinion opinion) {
+	@Path("/idopinion={idopinion}&idusuario={idusuario}&idexcursion={idexcursion}&opinion={opinion}&imgpath={imgpath}")
+	public Response updateOpinion(@PathParam("idopinion") String idopinion, @PathParam("idusuario") String idusuario,
+			@PathParam("idexcursion") String idexcursion, @PathParam("opinion") String opinion,
+			@PathParam("imgpath") String imgpath) {
 		Response res = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			if (idopinion != opinion.getIdOpinion()) {
-				res = Response.status(409).entity("Put: Opinion '" + opinion.getIdOpinion() + "' does not match with current opinion").build();
+			if (idOpinion != Integer.parseInt(idopinion)) {
+				res = Response.status(409).entity("Put: Opinion '" + idopinion + "' does not match with current opinion").build();
 			} else {
 				res = Response.noContent().build();
-				DatabaseManager.getInstance().editarOpinion(opinion);
+				DatabaseManager.getInstance().editarOpinion(Integer.parseInt(idopinion), idusuario, Integer.parseInt(idexcursion), opinion, imgpath);
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -65,7 +68,7 @@ public class OpinionResource {
 	public void deleteOpinion() {
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			DatabaseManager.getInstance().eliminarOpinion(idopinion);
+			DatabaseManager.getInstance().eliminarOpinion(idOpinion);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
