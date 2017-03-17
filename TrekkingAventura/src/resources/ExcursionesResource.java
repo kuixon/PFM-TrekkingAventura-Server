@@ -29,13 +29,11 @@ public class ExcursionesResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/criterio/nombre={nombre}&lugar={lugar}&distancia={distancia}&nivel={nivel}")
-	public List<Excursion> getExcursionesPorCriterio(@PathParam("nombre") String nombre,
-			@PathParam("lugar") String lugar, @PathParam("distancia") String distancia,
-			@PathParam("nivel") String nivel) {
+	@Path("/criterio/{criterio}")
+	public List<Excursion> getExcursionesPorCriterio(@PathParam("criterio") String criterio) {
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			return DatabaseManager.getInstance().obtenerExcursionesPorCriterio(nombre, lugar, distancia, nivel);
+			return DatabaseManager.getInstance().obtenerExcursionesPorCriterio(criterio);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -57,20 +55,16 @@ public class ExcursionesResource {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/insertar/idexcursion={idexcursion}&nombre={nombre}&nivel={nivel}&lugar={lugar}&distancia={distancia}&imgpath={imgpath}&latitud={latitud}&longitud={longitud}")
-	public Response newExcursion(@PathParam("idexcursion") String idexcursion, @PathParam("nombre") String nombre, 
-			@PathParam("nivel") String nivel, @PathParam("lugar") String lugar, @PathParam("distancia") String distancia, 
-			@PathParam("imgpath") String imgpath, @PathParam("latitud") String latitud, 
-			@PathParam("longitud") String longitud) {
+	public Response newExcursion(Excursion excursion) {
 		Response res = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			if (DatabaseManager.getInstance().obtenerExcursionPorId(Integer.parseInt(idexcursion)) != null) {
-				res = Response.status(409).entity("Post: Excursion '" + idexcursion + "' already exists").build();
+			if (DatabaseManager.getInstance().obtenerExcursionPorId(excursion.getIdExcursion()) != null) {
+				res = Response.status(409).entity("Post: Excursion '" + excursion.getIdExcursion() + "' already exists").build();
 			} else {
-				URI uri = uriInfo.getAbsolutePathBuilder().path("excursion").path(idexcursion).build();
-				res = Response.created(uri).entity(new Excursion(Integer.parseInt(idexcursion), nombre, nivel, lugar, Double.parseDouble(distancia), imgpath, Float.parseFloat(latitud), Float.parseFloat(longitud))).build();
-				DatabaseManager.getInstance().insertarExcursion(nombre, nivel, lugar, Double.parseDouble(distancia), imgpath, Float.parseFloat(latitud), Float.parseFloat(longitud));
+				URI uri = uriInfo.getAbsolutePathBuilder().path("excursion").path(Integer.toString(excursion.getIdExcursion())).build();
+				res = Response.created(uri).entity(excursion).build();
+				DatabaseManager.getInstance().insertarExcursion(excursion);
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

@@ -78,10 +78,10 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarUsuario(String idUsuario) {
+	public void insertarUsuario(Usuario u) {
 		try {
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate("INSERT INTO usuario VALUES('" + idUsuario + "')");
+			stmt.executeUpdate("INSERT INTO usuario VALUES('" + u.getIdUsuario() + "')");
 			log.info("Usuario insertado correctamente en la base de datos.");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -142,18 +142,22 @@ public class DatabaseManager {
 		}
 	}
 	
-	public List<Excursion> obtenerExcursionesPorCriterio(String nombre, String lugar, 
-			String distancia, String nivel) {
+	public List<Excursion> obtenerExcursionesPorCriterio(String criterio) {
+		final String[] criterios = criterio.split("-");
+		final String critNombre = criterios[0];
+		final String critLugar = criterios[1];
+		final String critDistancia = criterios[2];
+		final String critNivel = criterios[3];
 		
 		List<Excursion> ale = new ArrayList<Excursion>();
 		
-		final String condNombre = nombre.equals("nulo") ? "" : " nombre = '" + nombre + "'";
+		final String condNombre = critNombre.equals("nulo") ? "" : " nombre = '" + critNombre + "'";
 		final String condNombreComa = condNombre.isEmpty() ? "" : " AND";
-		final String condLugar = lugar.equals("nulo") ? "" : " lugar = '" + lugar + "'";
+		final String condLugar = critLugar.equals("nulo") ? "" : " lugar = '" + critLugar + "'";
 		final String condLugarComa = condLugar.isEmpty() ? "" : " AND";
-		final String condDistancia = distancia.equals("nulo") ? "" : " distancia = " + distancia;
+		final String condDistancia = critDistancia.equals("nulo") ? "" : " distancia = " + critDistancia;
 		final String condDistanciaComa = condDistancia.isEmpty() ? "" : " AND";
-		final String condNivel = nivel.equals("nulo") ? "" : " nivel = '" + nivel + "'";
+		final String condNivel = critNivel.equals("nulo") ? "" : " nivel = '" + critNivel + "'";
 		final String condNivelComa = condNivel.isEmpty() ? "" : " AND";
 		
 		try {
@@ -189,16 +193,15 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarExcursion(String nombre, String nivel, String lugar, double distancia, 
-			String imgpath, float latitud, float longitud) {
+	public void insertarExcursion(Excursion e) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("INSERT INTO excursion(nombre,nivel,lugar,"
 					+ "distancia,imgpath,latitud,longitud) "
-					+ "VALUES('" + nombre + "','" + nivel + "','"
-					+ lugar + "'," + distancia +
-					",'" + imgpath + "'," + latitud
-					+ "," + longitud + ")");
+					+ "VALUES('" + e.getNombre() + "','" + e.getNivel() + "','"
+					+ e.getLugar() + "'," + e.getDistancia() +
+					",'" + e.getFoto() + "'," + e.getLatitud()
+					+ "," + e.getLongitud() + ")");
 			log.info("Excursion insertada correctamente en la base de datos.");
 		} catch (SQLException exc) {
 			exc.printStackTrace();
@@ -287,12 +290,12 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarOpinion(String idusuario, int idexcursion, String opinion, String imgpath) {
+	public void insertarOpinion(Opinion o) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("INSERT INTO opinion(idusuario,idexcursion,opinion,imgpath) "
-					+ "VALUES('" + idusuario + "'," + idexcursion + ",'"
-					+ opinion + "','" + imgpath +"')");
+					+ "VALUES('" + o.getIdUsuario() + "'," + o.getIdExcursion() + ",'"
+					+ o.getOpinion() + "','" + o.getFoto() +"')");
 			log.info("Opinion insertada correctamente en la base de datos.");
 		} catch (SQLException exc) {
 			exc.printStackTrace();
@@ -300,16 +303,15 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void editarOpinion(int idopinion, String idusuario, int idexcursion, String opinion, 
-			String imgpath) {
+	public void editarOpinion(Opinion o) {
 		try {
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate("UPDATE opinion SET idusuario = '" + idusuario + "',"
-					+ " idexcursion = " + idexcursion + ","
-					+ " opinion = '" + opinion + "',"
-					+ " imgpath = '" + imgpath + "'" 
-					+ " WHERE idopinion = " + idopinion);
-			log.info("Opinion '" + idopinion + "' editada correctamente.");
+			stmt.executeUpdate("UPDATE opinion SET idusuario = '" + o.getIdUsuario() + "',"
+					+ " idexcursion = " + o.getIdExcursion() + ","
+					+ " opinion = '" + o.getOpinion() + "',"
+					+ " imgpath = '" + o.getFoto() + "'" 
+					+ " WHERE idopinion = " + o.getIdOpinion());
+			log.info("Opinion '" + o.getIdOpinion() + "' editada correctamente.");
 		} catch (SQLException exc) {
 			exc.printStackTrace();
 			log.warning("ERROR editarOpinion: " + exc.getMessage());

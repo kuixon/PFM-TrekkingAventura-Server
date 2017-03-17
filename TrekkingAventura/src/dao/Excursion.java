@@ -18,9 +18,8 @@ public class Excursion {
 		
 	}
 
-	public Excursion(int idExcursion, String nombre, String nivel, String lugar, double distancia, String foto, float latitud,
+	public Excursion(String nombre, String nivel, String lugar, double distancia, String foto, float latitud,
 			float longitud) {
-		this.idExcursion = idExcursion;
 		this.nombre = nombre;
 		this.nivel = nivel;
 		this.lugar = lugar;
