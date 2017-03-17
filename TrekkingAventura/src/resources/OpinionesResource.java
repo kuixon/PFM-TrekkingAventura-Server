@@ -55,16 +55,19 @@ public class OpinionesResource {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response newOpinion(Opinion opinion) {
+	@Path("/insertar/idopinion={idopinion}&idusuario={idusuario}&idexcursion={idexcursion}&opinion={opinion}&imgpath={imgpath}")
+	public Response newOpinion(@PathParam("idopinion") String idopinion, @PathParam("idusuario") String idusuario,
+			@PathParam("idexcursion") String idexcursion, @PathParam("opinion") String opinion,
+			@PathParam("imgpath") String imgpath) {
 		Response res = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			if (DatabaseManager.getInstance().obtenerOpinionPorId(opinion.getIdOpinion()) != null) {
-				res = Response.status(409).entity("Post: Opinion '" + opinion.getIdOpinion() + "' already exists").build();
+			if (DatabaseManager.getInstance().obtenerOpinionPorId(Integer.parseInt(idopinion)) != null) {
+				res = Response.status(409).entity("Post: Opinion '" + idopinion + "' already exists").build();
 			} else {
-				URI uri = uriInfo.getAbsolutePathBuilder().path("opinion").path(Integer.toString(opinion.getIdOpinion())).build();
-				res = Response.created(uri).entity(opinion).build();
-				DatabaseManager.getInstance().insertarOpinion(opinion);
+				URI uri = uriInfo.getAbsolutePathBuilder().path("opinion").path(idopinion).build();
+				res = Response.created(uri).entity(new Opinion(Integer.parseInt(idopinion), idusuario, Integer.parseInt(idexcursion), opinion, imgpath)).build();
+				DatabaseManager.getInstance().insertarOpinion(idusuario, Integer.parseInt(idexcursion), opinion, imgpath);
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

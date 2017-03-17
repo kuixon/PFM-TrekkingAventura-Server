@@ -15,7 +15,8 @@ public class Opinion {
 		
 	}
 
-	public Opinion(String idUsuario, int idExcursion, String opinion, String foto) {
+	public Opinion(int idOpinion, String idUsuario, int idExcursion, String opinion, String foto) {
+		this.idOpinion = idOpinion;
 		this.idUsuario = idUsuario;
 		this.idExcursion = idExcursion;
 		this.opinion = opinion;
