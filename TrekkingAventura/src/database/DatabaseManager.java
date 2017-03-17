@@ -13,6 +13,7 @@ import com.google.appengine.api.utils.SystemProperty;
 
 import dao.Excursion;
 import dao.Opinion;
+import dao.OpinionExtendida;
 import dao.Usuario;
 
 public class DatabaseManager {
@@ -247,22 +248,27 @@ public class DatabaseManager {
 		}
 	}
 	
-	public List<Opinion> obtenerOpinionesUsuario(String idusuario) {
-		List<Opinion> alo = new ArrayList<Opinion>();
+	public List<OpinionExtendida> obtenerOpinionesUsuario(String idusuario) {
+		List<OpinionExtendida> aloe = new ArrayList<OpinionExtendida>();
 		try {
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM opinion WHERE idusuario = '" + idusuario + "'");
+			ResultSet rs = stmt.executeQuery("SELECT o.idopinion, o.opinion, o.imgpath, u.idusuario, e.idexcursion, "
+			+"e.nombre, e.nivel, e.lugar, e.distancia, e.imgpath, e.latitud, e.longitud "
+			+"FROM opinion o, usuario u, excursion e "
+			+"WHERE o.idusuario = u.idusuario AND o.idexcursion = e.idexcursion AND o.idusuario = '" + idusuario + "'");
 			while (rs.next()) {
-				Opinion o = new Opinion();
-				o.setIdOpinion(rs.getInt("idopinion"));
-				o.setIdUsuario(rs.getString("idusuario"));
-				o.setIdExcursion(rs.getInt("idexcursion"));
-				o.setOpinion(rs.getString("opinion"));
-				o.setFoto(rs.getString("imgpath"));
-				log.info("Opinion '" + o.getIdOpinion() + "' añadida al arrayList.");
-				alo.add(o);
+				OpinionExtendida oe = new OpinionExtendida();
+				oe.setIdOpinion(rs.getInt(1));
+				oe.setOpinion(rs.getString(2));
+				oe.setImgPath(rs.getString(3));
+				oe.setUsuario(new Usuario(rs.getString(4)));
+				oe.setExcursion(new Excursion(rs.getInt(5), rs.getString(6), rs.getString(7), rs.getString(8),
+						rs.getDouble(9), rs.getString(10), rs.getFloat(11), rs.getFloat(12)));
+				
+				log.info("OpinionExtendida '" + oe.getIdOpinion() + "' añadida al arrayList.");
+				aloe.add(oe);
 			}
-			return alo;
+			return aloe;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			log.warning("ERROR obtenerOpinionesUsuario: " + e.getMessage());

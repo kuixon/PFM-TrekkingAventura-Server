@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import dao.Opinion;
+import dao.OpinionExtendida;
 import database.DatabaseManager;
 
 @Path("/opiniones")
@@ -31,8 +32,8 @@ public class OpinionesResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/usuario/{idusuario}")
-	public List<Opinion> getOpinionesUsuario(@PathParam("idusuario") String idusuario) {
-		List<Opinion> lo = null;
+	public List<OpinionExtendida> getOpinionesUsuario(@PathParam("idusuario") String idusuario) {
+		List<OpinionExtendida> lo = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
 			lo = DatabaseManager.getInstance().obtenerOpinionesUsuario(idusuario);
