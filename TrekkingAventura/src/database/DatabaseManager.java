@@ -78,15 +78,17 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarUsuario(String idUsuario) {
+	public Usuario insertarUsuario(String idUsuario) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("INSERT INTO usuario VALUES('" + idUsuario + "')");
 			log.info("Usuario insertado correctamente en la base de datos.");
+			return new Usuario(idUsuario);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			log.warning("ERROR insertarUsuario: " + e.getMessage());
 		}
+		return null;
 	}
 	
 	// EXCURSIONES
@@ -189,7 +191,7 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarExcursion(String nombre, String nivel, String lugar, double distancia, 
+	public Excursion insertarExcursion(String nombre, String nivel, String lugar, double distancia, 
 			String imgpath, float latitud, float longitud) {
 		try {
 			Statement stmt = con.createStatement();
@@ -200,21 +202,25 @@ public class DatabaseManager {
 					",'" + imgpath + "'," + latitud
 					+ "," + longitud + ")");
 			log.info("Excursion insertada correctamente en la base de datos.");
+			return new Excursion(0, nombre, nivel, lugar, distancia, imgpath, latitud, longitud);
 		} catch (SQLException exc) {
 			exc.printStackTrace();
 			log.warning("ERROR insertarExcursion: " + exc.getMessage());
 		}
+		return null;
 	}
 	
-	public void eliminarExcursion(int id) {
+	public Excursion eliminarExcursion(int id) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("DELETE FROM excursion WHERE idexcursion = " + id);
 			log.info("La excursion con id '" + id + "' fue eliminada correctamente.");
+			return new Excursion(id, "", "", "", 0, "", 0, 0);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			log.warning("ERROR eliminarExcursion: " + e.getMessage());
 		}
+		return null;
 	}
 	
 	// OPINIONES
@@ -287,20 +293,22 @@ public class DatabaseManager {
 		}
 	}
 	
-	public void insertarOpinion(String idusuario, int idexcursion, String opinion, String imgpath) {
+	public Opinion insertarOpinion(String idusuario, int idexcursion, String opinion, String imgpath) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("INSERT INTO opinion(idusuario,idexcursion,opinion,imgpath) "
 					+ "VALUES('" + idusuario + "'," + idexcursion + ",'"
 					+ opinion + "','" + imgpath +"')");
 			log.info("Opinion insertada correctamente en la base de datos.");
+			return new Opinion(0, idusuario, idexcursion, opinion, imgpath);
 		} catch (SQLException exc) {
 			exc.printStackTrace();
 			log.warning("ERROR insertarOpinion: " + exc.getMessage());
 		}
+		return null;
 	}
 	
-	public void editarOpinion(int idopinion, String idusuario, int idexcursion, String opinion, 
+	public Opinion editarOpinion(int idopinion, String idusuario, int idexcursion, String opinion, 
 			String imgpath) {
 		try {
 			Statement stmt = con.createStatement();
@@ -310,20 +318,24 @@ public class DatabaseManager {
 					+ " imgpath = '" + imgpath + "'" 
 					+ " WHERE idopinion = " + idopinion);
 			log.info("Opinion '" + idopinion + "' editada correctamente.");
+			return new Opinion(idopinion, idusuario, idexcursion, opinion, imgpath);
 		} catch (SQLException exc) {
 			exc.printStackTrace();
 			log.warning("ERROR editarOpinion: " + exc.getMessage());
 		}
+		return null;
 	}
 	
-	public void eliminarOpinion(int id) {
+	public Opinion eliminarOpinion(int id) {
 		try {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate("DELETE FROM opinion WHERE idopinion = " + id);
 			log.info("La opinion con id '" + id + "' fue eliminada correctamente.");
+			return new Opinion(id, "", 0, "", "");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			log.warning("ERROR eliminarOpinion: " + e.getMessage());
 		}
+		return null;
 	}
 }
