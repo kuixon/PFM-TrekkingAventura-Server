@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import dao.Excursion;
+import dao.ExcursionDestacada;
 import database.DatabaseManager;
 
 @Path("/excursiones")
@@ -26,6 +27,20 @@ public class ExcursionesResource {
 			e.printStackTrace();
 		}
 		return ex;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/destacadas")
+	public List<ExcursionDestacada> getExcursionesDestacadas() {
+		List<ExcursionDestacada> led = null;
+		try {
+			DatabaseManager.getInstance().establecerConexion();
+			led = DatabaseManager.getInstance().getExcursionesDestacadas();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return led;
 	}
 	
 	@GET

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import com.google.appengine.api.utils.SystemProperty;
 
 import dao.Excursion;
+import dao.ExcursionDestacada;
 import dao.Opinion;
 import dao.OpinionExtendida;
 import dao.Usuario;
@@ -115,6 +116,37 @@ public class DatabaseManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			log.warning("ERROR obtenerExcursionPorId: " + e.getMessage());
+			return null;
+		}
+	}
+	
+	public List<ExcursionDestacada> getExcursionesDestacadas() {
+		List<ExcursionDestacada> aled = new ArrayList<ExcursionDestacada>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT e.idexcursion, e.nombre, e.nivel, e.lugar, e.distancia, e.imgpath, e.latitud, e.longitud, count(o.idexcursion) "
+							+ "FROM excursion e, opinion o "
+							+ "WHERE e.idexcursion = o.idexcursion "
+							+ "GROUP BY o.idexcursion");
+			while (rs.next()) {
+				ExcursionDestacada ed = new ExcursionDestacada();
+				ed.setIdExcursion(rs.getInt(1));
+				ed.setNombre(rs.getString(2));
+				ed.setNivel(rs.getString(3));
+				ed.setLugar(rs.getString(4));
+				ed.setDistancia(rs.getDouble(5));
+				ed.setFoto(rs.getString(6));
+				ed.setLatitud(rs.getFloat(7));
+				ed.setLongitud(rs.getFloat(8));
+				ed.setNumOpiniones(rs.getInt(9));
+				
+				log.info("ExcursionDestacada '" + ed.getIdExcursion() + "' añadida al arrayList.");
+				aled.add(ed);
+			}
+			return aled;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			log.warning("ERROR getExcursionesDestacadas: " + e.getMessage());
 			return null;
 		}
 	}
