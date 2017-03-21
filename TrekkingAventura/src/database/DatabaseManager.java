@@ -367,8 +367,32 @@ public class DatabaseManager {
 	public Opinion eliminarOpinion(int id) {
 		try {
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate("DELETE FROM opinion WHERE idopinion = " + id);
-			log.info("La opinion con id '" + id + "' fue eliminada correctamente.");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM opinion "
+					+ "WHERE idexcursion = (SELECT idexcursion FROM opinion WHERE idopinion = " + id + ")");
+			
+			boolean deleteExcursion = false;
+			int idDeleteExcursion = 0;
+			int rowcount = 0;
+			if (rs.last()) {
+			  rowcount = rs.getRow();
+			  if (rowcount == 1) {
+				  deleteExcursion = true;
+			  }
+			  rs.beforeFirst();
+			}
+			
+			if (rs.next() && deleteExcursion) {
+			  idDeleteExcursion = rs.getInt("idexcursion");
+			}
+			
+			Statement stmt2 = con.createStatement();
+			stmt2.executeUpdate("DELETE FROM opinion WHERE idopinion = " + id);
+			
+			if (deleteExcursion) {
+				Statement stmt3 = con.createStatement();
+				stmt3.executeUpdate("DELETE FROM excursion WHERE idexcursion = " + idDeleteExcursion);
+			}
+			
 			return new Opinion(id, "", 0, "", "");
 		} catch (SQLException e) {
 			e.printStackTrace();

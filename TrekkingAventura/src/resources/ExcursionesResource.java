@@ -88,17 +88,4 @@ public class ExcursionesResource {
 		}
 		return ex;
 	}
-	
-	@GET
-	@Path("/eliminar/{id}")
-	public Excursion deleteExcursion(@PathParam("id") String id) {
-		Excursion ex = null;
-		try {
-			DatabaseManager.getInstance().establecerConexion();
-			ex = DatabaseManager.getInstance().eliminarExcursion(Integer.parseInt(id));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return ex;
-	}
 }
