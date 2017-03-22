@@ -235,7 +235,12 @@ public class DatabaseManager {
 					",'" + imgpath + "'," + latitud
 					+ "," + longitud + ")");
 			log.info("Excursion insertada correctamente en la base de datos.");
-			return new Excursion(0, nombre, nivel, lugar, distancia, imgpath, latitud, longitud);
+			
+			Statement stmt2 = con.createStatement();
+			ResultSet rs2 = stmt2.executeQuery("SELECT idexcursion FROM excursion WHERE nombre = '" + nombre + "'");
+			if (rs2.next()) {
+				return new Excursion(rs2.getInt(1), nombre, nivel, lugar, distancia, imgpath, latitud, longitud);
+			}
 		} catch (SQLException exc) {
 			exc.printStackTrace();
 			log.warning("ERROR insertarExcursion: " + exc.getMessage());
