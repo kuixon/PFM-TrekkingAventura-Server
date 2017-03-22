@@ -65,7 +65,8 @@ public class OpinionesResource {
 		Opinion o = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			o = DatabaseManager.getInstance().insertarOpinion(idusuario, Integer.parseInt(idexcursion), opinion, imgpath);
+			final String fot = imgpath.equals("nulo") ? "" : imgpath;
+			o = DatabaseManager.getInstance().insertarOpinion(idusuario, Integer.parseInt(idexcursion), opinion, fot);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -80,7 +81,8 @@ public class OpinionesResource {
 		Opinion o = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			o = DatabaseManager.getInstance().editarOpinion(Integer.parseInt(idopinion), idusuario, Integer.parseInt(idexcursion), opinion, imgpath);
+			final String fot = imgpath.equals("nulo") ? "" : imgpath;
+			o = DatabaseManager.getInstance().editarOpinion(Integer.parseInt(idopinion), idusuario, Integer.parseInt(idexcursion), opinion, fot);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

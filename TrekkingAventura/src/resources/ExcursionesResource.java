@@ -82,7 +82,8 @@ public class ExcursionesResource {
 		Excursion ex = null;
 		try {
 			DatabaseManager.getInstance().establecerConexion();
-			ex = DatabaseManager.getInstance().insertarExcursion(nombre, nivel, lugar, Double.parseDouble(distancia), imgpath, Float.parseFloat(latitud), Float.parseFloat(longitud));
+			final String fot = imgpath.equals("nulo") ? "" : imgpath;
+			ex = DatabaseManager.getInstance().insertarExcursion(nombre, nivel, lugar, Double.parseDouble(distancia), fot, Float.parseFloat(latitud), Float.parseFloat(longitud));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
